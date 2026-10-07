@@ -72,11 +72,10 @@ export default function CartPage() {
                     <div style={{ fontWeight: 700 }}>{item.name}</div>
 
                     <div className="text-muted" style={{ marginTop: 4, fontSize: 12 }}>
-                      {[item.size, item.color, item.sleeveType, item.edition]
+                      {[item.size, item.color]
                         .filter(Boolean)
                         .join(" / ") || "Default variant"}
                     </div>
-
                     <div className="text-muted" style={{ marginTop: 6 }}>
                       {money(item.price)}
                     </div>
