@@ -1,5 +1,6 @@
 import { db } from "./db";
 import { getActiveHeroBanners } from "./banners";
+import { getHomepageSections } from "./homepage-sections";
 
 function mapProduct(product: {
   id: string;
@@ -134,6 +135,7 @@ export async function getHomepageData() {
     bestSellers,
     featuredCategories,
     heroBanners,
+    sections,
   ] = await Promise.all([
     getProductsByFlag("isFeatured"),
     getProductsByFlag("isHotDeal"),
@@ -141,6 +143,7 @@ export async function getHomepageData() {
     getProductsByFlag("isBestSeller"),
     getFeaturedCategories(),
     getActiveHeroBanners(),
+    getHomepageSections(),
   ]);
 
   return {
@@ -150,5 +153,6 @@ export async function getHomepageData() {
     bestSellers,
     featuredCategories,
     heroBanners,
+    sections,
   };
 }

@@ -232,7 +232,7 @@ export function BannerForm({ initialData }: BannerFormProps) {
               signatureEndpoint="/api/cloudinary/sign"
               options={{
                 resourceType: "image",
-                folder: "STRIKE/banners/desktop",
+                folder: "lunehra/banners/desktop",
                 sources: ["local", "url", "camera"],
                 multiple: false,
                 maxFiles: 1,
@@ -272,7 +272,7 @@ export function BannerForm({ initialData }: BannerFormProps) {
               signatureEndpoint="/api/cloudinary/sign"
               options={{
                 resourceType: "image",
-                folder: "STRIKE/banners/mobile",
+                folder: "lunehra/banners/mobile",
                 sources: ["local", "url", "camera"],
                 multiple: false,
                 maxFiles: 1,
@@ -315,7 +315,7 @@ export function BannerForm({ initialData }: BannerFormProps) {
             <input
               value={form.ctaText}
               onChange={(e) => setForm({ ...form, ctaText: e.target.value })}
-              placeholder="Shop World Cup"
+              placeholder="Shop Collection"
               style={{ width: "100%", minHeight: 44, padding: "0 14px" }}
             />
           </div>
@@ -327,7 +327,7 @@ export function BannerForm({ initialData }: BannerFormProps) {
             <input
               value={form.ctaUrl}
               onChange={(e) => setForm({ ...form, ctaUrl: e.target.value })}
-              placeholder="/collections/world-cup-2026"
+              placeholder="/shop"
               style={{ width: "100%", minHeight: 44, padding: "0 14px" }}
             />
           </div>

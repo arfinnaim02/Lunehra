@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 type SidebarCounts = {
   ordersCount: number;
   inventoryCount: number;
-  reviewsCount: number;
-  supportCount: number;
 };
 
 type SidebarItem = {
@@ -57,12 +55,15 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
           label: "Orders",
           href: "/admin/orders",
           icon: "📦",
-          badge: counts.ordersCount > 0 ? String(counts.ordersCount) : undefined,
+          badge:
+            counts.ordersCount > 0
+              ? String(counts.ordersCount)
+              : undefined,
         },
         {
           label: "Products",
           href: "/admin/products",
-          icon: "👕",
+          icon: "👗",
         },
         {
           label: "Categories",
@@ -78,7 +79,10 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
           label: "Inventory",
           href: "/admin/inventory",
           icon: "📦",
-          badge: counts.inventoryCount > 0 ? String(counts.inventoryCount) : undefined,
+          badge:
+            counts.inventoryCount > 0
+              ? String(counts.inventoryCount)
+              : undefined,
         },
       ],
     },
@@ -90,77 +94,35 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
           href: "/admin/customers",
           icon: "👥",
         },
-        {
-          label: "Reviews",
-          href: "/admin/reviews",
-          icon: "⭐",
-          badge: counts.reviewsCount > 0 ? String(counts.reviewsCount) : undefined,
-        },
-        {
-          label: "Support",
-          href: "/admin/support",
-          icon: "🎫",
-          badge: counts.supportCount > 0 ? String(counts.supportCount) : undefined,
-        },
-        {
-          label: "Returns",
-          href: "/admin/returns",
-          icon: "🔄",
-        },
       ],
     },
     {
       label: "Marketing",
       items: [
         {
-          label: "Coupons",
-          href: "/admin/coupons",
-          icon: "🏷️",
-        },
-        {
-          label: "Banners",
-          href: "/admin/banners",
-          icon: "🖼️",
-        },
-        {
           label: "Homepage",
           href: "/admin/homepage",
           icon: "🏠",
         },
+        {
+          label: "Hero Banners",
+          href: "/admin/banners",
+          icon: "🖼️",
+        },
+        {
+          label: "Coupons",
+          href: "/admin/coupons",
+          icon: "🏷️",
+        },
       ],
     },
     {
-      label: "Settings",
+      label: "Administration",
       items: [
-        {
-          label: "Delivery",
-          href: "/admin/delivery",
-          icon: "🚚",
-        },
-        {
-          label: "Payments",
-          href: "/admin/payments",
-          icon: "💳",
-        },
-        {
-          label: "Reports",
-          href: "/admin/reports",
-          icon: "📈",
-        },
-        {
-          label: "SEO",
-          href: "/admin/seo",
-          icon: "🔍",
-        },
         {
           label: "Staff",
           href: "/admin/staff",
           icon: "🔐",
-        },
-        {
-          label: "Settings",
-          href: "/admin/settings",
-          icon: "⚙️",
         },
       ],
     },
@@ -175,7 +137,7 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
         }}
       >
         <Link href="/admin/dashboard" className="site-logo">
-          STRIKE<span>⚡</span>
+          LUNEHRA
         </Link>
 
         <div
@@ -199,7 +161,12 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
 
       <div style={{ paddingBottom: 80 }}>
         {sections.map((section) => (
-          <div key={section.label} style={{ padding: "14px 10px 6px" }}>
+          <div
+            key={section.label}
+            style={{
+              padding: "14px 10px 6px",
+            }}
+          >
             <div
               style={{
                 padding: "0 10px",
@@ -214,9 +181,17 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
               {section.label}
             </div>
 
-            <div style={{ display: "grid", gap: 4 }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 4,
+              }}
+            >
               {section.items.map((item) => {
-                const active = isItemActive(pathname, item.href);
+                const active = isItemActive(
+                  pathname,
+                  item.href
+                );
 
                 return (
                   <Link
@@ -228,7 +203,9 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
                       gap: 10,
                       padding: "10px 12px",
                       borderRadius: 10,
-                      color: active ? "var(--accent)" : "var(--muted)",
+                      color: active
+                        ? "var(--accent)"
+                        : "var(--muted)",
                       background: active
                         ? "rgba(216,255,47,0.1)"
                         : "transparent",
@@ -240,7 +217,12 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
                       fontWeight: active ? 700 : 500,
                     }}
                   >
-                    <span style={{ width: 18, textAlign: "center" }}>
+                    <span
+                      style={{
+                        width: 18,
+                        textAlign: "center",
+                      }}
+                    >
                       {item.icon}
                     </span>
 
@@ -251,7 +233,7 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
                         style={{
                           marginLeft: "auto",
                           background:
-                            item.label === "Inventory" || item.label === "Reviews"
+                            item.label === "Inventory"
                               ? "var(--warning)"
                               : "var(--danger)",
                           color: "#fff",
@@ -300,12 +282,27 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
             fontSize: 13,
           }}
         >
-          SA
+          LA
         </div>
 
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700 }}>Strike Admin</div>
-          <div style={{ fontSize: 11, color: "var(--muted)" }}>Super Admin</div>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            Lunehra Admin
+          </div>
+
+          <div
+            style={{
+              fontSize: 11,
+              color: "var(--muted)",
+            }}
+          >
+            Administration
+          </div>
         </div>
       </div>
     </aside>
