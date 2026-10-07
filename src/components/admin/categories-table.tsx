@@ -8,6 +8,7 @@ type AdminCategory = {
   id: string;
   name: string;
   slug: string;
+  image: string | null;
   parentName: string | null;
   isActive: boolean;
   isFeatured: boolean;
@@ -234,6 +235,7 @@ export function CategoriesTable({
                   aria-label="Select all visible categories"
                 />
               </th>
+              <th>Image</th>
               <th>Name</th>
               <th>Slug</th>
               <th>Parent</th>
@@ -251,7 +253,7 @@ export function CategoriesTable({
             {categories.length === 0 ? (
               <tr>
                 <td
-                  colSpan={11}
+                  colSpan={12}
                   style={{
                     padding: 24,
                     color: "var(--muted)",
@@ -272,6 +274,45 @@ export function CategoriesTable({
                     />
                   </td>
 
+
+                                  <td>
+                    <div
+                      style={{
+                        width: 52,
+                        height: 64,
+                        borderRadius: 10,
+                        overflow: "hidden",
+                        background: "var(--surface-2)",
+                        border: "1px solid var(--border)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {category.image ? (
+                        <img
+                          src={category.image}
+                          alt={category.name}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            color: "var(--muted)",
+                            fontSize: 10,
+                            textAlign: "center",
+                          }}
+                        >
+                          No Image
+                        </span>
+                      )}
+                    </div>
+                  </td> 
+                  
                   <td>
                     <div style={{ fontWeight: 800 }}>{category.name}</div>
                   </td>

@@ -26,8 +26,39 @@ export default async function CategoryPage({ params }: PageProps) {
           marginBottom: 28,
           overflow: "hidden",
           position: "relative",
+          minHeight: category.image ? 360 : undefined,
+          display: "flex",
+          alignItems: "flex-end",
         }}
       >
+        {category.image ? (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+            }}
+          >
+            <img
+              src={category.image}
+              alt={category.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(90deg, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.62) 45%, rgba(10,10,10,0.20) 100%)",
+              }}
+            />
+          </div>
+        ) : null}
         <div
           style={{
             position: "absolute",
@@ -38,7 +69,14 @@ export default async function CategoryPage({ params }: PageProps) {
           }}
         />
 
-        <div style={{ position: "relative", zIndex: 1 }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+            maxWidth: 760,
+          }}
+        >
           <div
             style={{
               fontSize: 12,

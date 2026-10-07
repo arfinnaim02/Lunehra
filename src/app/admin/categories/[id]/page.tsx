@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { db } from "../../../../lib/db";
 import { getCurrentAdmin } from "../../../../lib/admin-auth";
+import { CategoryImageManager } from "../../../../components/admin/category-image-manager";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -141,6 +142,16 @@ export default async function EditCategoryPage({ params }: PageProps) {
           </div>
         </form>
       </div>
+
+      <CategoryImageManager
+        categoryId={category.id}
+        categoryName={category.name}
+        image={category.image}
+        folder={
+          process.env.CLOUDINARY_CATEGORY_FOLDER ||
+          "lunehra/categories"
+        }
+      />
     </main>
   );
 }

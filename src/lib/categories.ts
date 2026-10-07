@@ -64,6 +64,7 @@ export async function getAdminCategories({
         id: true,
         name: true,
         slug: true,
+        image: true,
         parent: {
           select: {
             name: true,
@@ -94,6 +95,7 @@ export async function getAdminCategories({
       id: category.id,
       name: category.name,
       slug: category.slug,
+      image: category.image,
       parentName: category.parent?.name ?? null,
       isActive: category.isActive,
       isFeatured: category.isFeatured,
