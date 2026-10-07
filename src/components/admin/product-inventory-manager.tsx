@@ -7,8 +7,6 @@ type Variant = {
   sku: string;
   size: string | null;
   color: string | null;
-  sleeveType: string | null;
-  edition: string | null;
   priceOffset: number;
   stockQty: number;
   lowStockAt: number;
@@ -29,53 +27,91 @@ type Props = {
   product: ProductData;
 };
 
-const sizeOptions = ["S", "M", "L", "XL", "XXL", "3XL", "4XL"];
-const editionOptions = ["Fan Edition", "Player Edition"];
+const sizeOptions = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "3XL",
+  "4XL",
+  "Free Size",
+];
 
-function variantKey(edition: string, size: string) {
-  return `${edition}__${size}`.toUpperCase();
+function variantKey(size: string, color: string) {
+  return `${size}__${color}`.toUpperCase();
 }
 
-export function ProductInventoryManager({ product }: Props) {
-  const [newEdition, setNewEdition] = useState("Fan Edition");
+export function ProductInventoryManager({
+  product,
+}: Props) {
+  const [newColor, setNewColor] = useState("");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [newStockBySize, setNewStockBySize] = useState<Record<string, string>>({});
+
+  const [newStockBySize, setNewStockBySize] = useState<
+    Record<string, string>
+  >({});
 
   const existingVariantKeys = new Set(
-    product.variants
-      .map((variant) =>
-        variantKey(variant.edition || "Standard", variant.size || "")
+    product.variants.map((variant) =>
+      variantKey(
+        variant.size || "",
+        variant.color || ""
       )
-      .filter(Boolean)
-  );
-
-  const [existingStock, setExistingStock] = useState<Record<string, string>>(
-    Object.fromEntries(
-      product.variants.map((variant) => [variant.id, String(variant.stockQty)])
     )
   );
 
-  const [existingLowStock, setExistingLowStock] = useState<Record<string, string>>(
+  const [existingStock, setExistingStock] = useState<
+    Record<string, string>
+  >(
     Object.fromEntries(
-      product.variants.map((variant) => [variant.id, String(variant.lowStockAt)])
+      product.variants.map((variant) => [
+        variant.id,
+        String(variant.stockQty),
+      ])
     )
   );
 
-  const [existingPriceOffset, setExistingPriceOffset] = useState<Record<string, string>>(
+  const [existingLowStock, setExistingLowStock] = useState<
+    Record<string, string>
+  >(
     Object.fromEntries(
-      product.variants.map((variant) => [variant.id, String(variant.priceOffset)])
+      product.variants.map((variant) => [
+        variant.id,
+        String(variant.lowStockAt),
+      ])
     )
   );
 
-  const [existingActive, setExistingActive] = useState<Record<string, boolean>>(
+  const [existingPriceOffset, setExistingPriceOffset] = useState<
+    Record<string, string>
+  >(
     Object.fromEntries(
-      product.variants.map((variant) => [variant.id, variant.isActive])
+      product.variants.map((variant) => [
+        variant.id,
+        String(variant.priceOffset),
+      ])
+    )
+  );
+
+  const [existingActive, setExistingActive] = useState<
+    Record<string, boolean>
+  >(
+    Object.fromEntries(
+      product.variants.map((variant) => [
+        variant.id,
+        variant.isActive,
+      ])
     )
   );
 
   function toggleSize(size: string) {
-    const key = variantKey(newEdition, size);
-    if (existingVariantKeys.has(key)) return;
+    const key = variantKey(size, newColor.trim());
+
+    if (newColor.trim() && existingVariantKeys.has(key)) {
+      return;
+    }
 
     setSelectedSizes((prev) =>
       prev.includes(size)
@@ -87,20 +123,26 @@ export function ProductInventoryManager({ product }: Props) {
   const addItemsJson = useMemo(() => {
     return JSON.stringify(
       selectedSizes.map((size) => ({
-        edition: newEdition,
         size,
+        color: newColor.trim() || null,
         stockQty: Number(newStockBySize[size] || 0),
       }))
     );
-  }, [selectedSizes, newStockBySize, newEdition]);
+  }, [selectedSizes, newStockBySize, newColor]);
 
   const updateItemsJson = useMemo(() => {
     return JSON.stringify(
       product.variants.map((variant) => ({
         variantId: variant.id,
-        stockQty: Number(existingStock[variant.id] ?? variant.stockQty),
-        lowStockAt: Number(existingLowStock[variant.id] ?? variant.lowStockAt),
-        priceOffset: Number(existingPriceOffset[variant.id] ?? variant.priceOffset),
+        stockQty: Number(
+          existingStock[variant.id] ?? variant.stockQty
+        ),
+        lowStockAt: Number(
+          existingLowStock[variant.id] ?? variant.lowStockAt
+        ),
+        priceOffset: Number(
+          existingPriceOffset[variant.id] ?? variant.priceOffset
+        ),
         isActive: Boolean(existingActive[variant.id]),
       }))
     );
@@ -114,58 +156,119 @@ export function ProductInventoryManager({ product }: Props) {
 
   return (
     <div style={{ display: "grid", gap: 22 }}>
-      <div className="surface-card" style={{ padding: 20, borderRadius: 20 }}>
-        <div style={{ fontWeight: 800, fontSize: 20 }}>{product.name}</div>
-        <div style={{ color: "var(--muted)", fontSize: 13, marginTop: 6 }}>
+      <div
+        className="surface-card"
+        style={{
+          padding: 20,
+          borderRadius: 20,
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 800,
+            fontSize: 20,
+          }}
+        >
+          {product.name}
+        </div>
+
+        <div
+          style={{
+            color: "var(--muted)",
+            fontSize: 13,
+            marginTop: 6,
+          }}
+        >
           {product.categoryName} · {product.status}
         </div>
-        <div style={{ color: "var(--muted)", fontSize: 13, marginTop: 6 }}>
-          Total Stock: {product.totalStock} · Variants: {product.variants.length}
+
+        <div
+          style={{
+            color: "var(--muted)",
+            fontSize: 13,
+            marginTop: 6,
+          }}
+        >
+          Total Stock: {product.totalStock} · Variants:{" "}
+          {product.variants.length}
         </div>
       </div>
 
       <div className="dashboard-card">
         <div className="dashboard-card-header">
-          <div className="dashboard-card-title">Add Edition Sizes</div>
+          <div className="dashboard-card-title">
+            Add Size & Color Variants
+          </div>
         </div>
 
         <div className="dashboard-card-body">
           <form
             action="/api/admin/inventory/manage/add-sizes"
             method="POST"
-            style={{ display: "grid", gap: 18 }}
+            style={{
+              display: "grid",
+              gap: 18,
+            }}
           >
-            <input type="hidden" name="productId" value={product.id} />
-            <input type="hidden" name="itemsJson" value={addItemsJson} />
+            <input
+              type="hidden"
+              name="productId"
+              value={product.id}
+            />
 
-            <div style={{ display: "grid", gap: 8 }}>
-              <label>Edition</label>
-              <select
-                name="edition"
-                value={newEdition}
+            <input
+              type="hidden"
+              name="itemsJson"
+              value={addItemsJson}
+            />
+
+            <div
+              style={{
+                display: "grid",
+                gap: 8,
+              }}
+            >
+              <label>Color</label>
+
+              <input
+                type="text"
+                value={newColor}
                 onChange={(e) => {
-                  setNewEdition(e.target.value);
+                  setNewColor(e.target.value);
                   setSelectedSizes([]);
                   setNewStockBySize({});
                 }}
-              >
-                {editionOptions.map((edition) => (
-                  <option key={edition} value={edition}>
-                    {edition}
-                  </option>
-                ))}
-              </select>
+                placeholder="Black, Maroon, Olive..."
+              />
+
+              <small className="text-muted">
+                Leave blank if this product does not need a color option.
+              </small>
             </div>
 
-            <div style={{ display: "grid", gap: 10 }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 10,
+              }}
+            >
               <label>Select Sizes</label>
 
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  flexWrap: "wrap",
+                }}
+              >
                 {sizeOptions.map((size) => {
-                  const alreadyExists = existingVariantKeys.has(
-                    variantKey(newEdition, size)
-                  );
-                  const isSelected = selectedSizes.includes(size);
+                  const alreadyExists =
+                    existingVariantKeys.has(
+                      variantKey(size, newColor.trim())
+                    );
+
+                  const isSelected =
+                    selectedSizes.includes(size);
 
                   return (
                     <button
@@ -177,13 +280,19 @@ export function ProductInventoryManager({ product }: Props) {
                       style={{
                         minWidth: 70,
                         border: isSelected
-                          ? "1px solid rgba(225,255,59,0.35)"
+                          ? "1px solid rgba(212,175,55,0.4)"
                           : undefined,
-                        background: isSelected ? "var(--accent-soft)" : undefined,
-                        color: isSelected ? "var(--accent)" : undefined,
+                        background: isSelected
+                          ? "var(--accent-soft)"
+                          : undefined,
+                        color: isSelected
+                          ? "var(--accent)"
+                          : undefined,
                         fontWeight: 800,
                         opacity: alreadyExists ? 0.45 : 1,
-                        cursor: alreadyExists ? "not-allowed" : "pointer",
+                        cursor: alreadyExists
+                          ? "not-allowed"
+                          : "pointer",
                       }}
                     >
                       {size}
@@ -194,21 +303,43 @@ export function ProductInventoryManager({ product }: Props) {
             </div>
 
             {selectedSizes.length > 0 ? (
-              <div className="surface-card" style={{ padding: 18, borderRadius: 18 }}>
-                <div style={{ fontWeight: 800, marginBottom: 14 }}>
-                  Stock for {newEdition}
+              <div
+                className="surface-card"
+                style={{
+                  padding: 18,
+                  borderRadius: 18,
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: 800,
+                    marginBottom: 14,
+                  }}
+                >
+                  Opening Stock
+                  {newColor.trim()
+                    ? ` · ${newColor.trim()}`
+                    : ""}
                 </div>
 
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(140px, 1fr))",
                     gap: 12,
                   }}
                 >
                   {selectedSizes.map((size) => (
-                    <div key={size} style={{ display: "grid", gap: 8 }}>
+                    <div
+                      key={size}
+                      style={{
+                        display: "grid",
+                        gap: 8,
+                      }}
+                    >
                       <label>{size} Stock</label>
+
                       <input
                         type="number"
                         min="0"
@@ -230,32 +361,58 @@ export function ProductInventoryManager({ product }: Props) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gridTemplateColumns:
+                  "repeat(auto-fit, minmax(180px, 1fr))",
                 gap: 16,
               }}
             >
-              <div style={{ display: "grid", gap: 8 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 8,
+                }}
+              >
                 <label>SKU Prefix</label>
+
                 <input
                   name="skuPrefix"
-                  defaultValue={product.slug.toUpperCase().replace(/[^A-Z0-9]+/g, "-")}
+                  defaultValue={product.slug
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]+/g, "-")}
                   required
                 />
               </div>
 
-              <div style={{ display: "grid", gap: 8 }}>
-                <label>Price Offset</label>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 8,
+                }}
+              >
+                <label>Price Adjustment</label>
+
                 <input
                   name="priceOffset"
                   type="number"
                   step="0.01"
-                  defaultValue={newEdition === "Player Edition" ? "400" : "0"}
+                  defaultValue="0"
                 />
               </div>
 
-              <div style={{ display: "grid", gap: 8 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 8,
+                }}
+              >
                 <label>Low Stock Alert</label>
-                <input name="lowStockAt" type="number" min="0" defaultValue="5" />
+
+                <input
+                  name="lowStockAt"
+                  type="number"
+                  min="0"
+                  defaultValue="5"
+                />
               </div>
             </div>
 
@@ -264,7 +421,7 @@ export function ProductInventoryManager({ product }: Props) {
               className="btn-primary"
               disabled={selectedSizes.length === 0}
             >
-              Add Selected Edition Sizes
+              Add Selected Variants
             </button>
           </form>
         </div>
@@ -272,25 +429,42 @@ export function ProductInventoryManager({ product }: Props) {
 
       <div className="dashboard-card">
         <div className="dashboard-card-header">
-          <div className="dashboard-card-title">Manage Existing Variants</div>
+          <div className="dashboard-card-title">
+            Manage Existing Variants
+          </div>
         </div>
 
         <div className="dashboard-card-body">
           {product.variants.length === 0 ? (
-            <div className="text-muted">No variants found for this product.</div>
+            <div className="text-muted">
+              No variants found for this product.
+            </div>
           ) : (
             <form
               action="/api/admin/inventory/manage/update"
               method="POST"
-              style={{ display: "grid", gap: 18 }}
+              style={{
+                display: "grid",
+                gap: 18,
+              }}
             >
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="itemsJson" value={updateItemsJson} />
+              <input
+                type="hidden"
+                name="productId"
+                value={product.id}
+              />
+
+              <input
+                type="hidden"
+                name="itemsJson"
+                value={updateItemsJson}
+              />
 
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(240px, 1fr))",
                   gap: 14,
                 }}
               >
@@ -305,15 +479,35 @@ export function ProductInventoryManager({ product }: Props) {
                       gap: 10,
                     }}
                   >
-                    <div style={{ fontWeight: 900, fontSize: 18 }}>
-                      {variant.edition || "Standard"} / {variant.size || "No Size"}
+                    <div
+                      style={{
+                        fontWeight: 900,
+                        fontSize: 18,
+                      }}
+                    >
+                      {variant.size || "No Size"}
+                      {variant.color
+                        ? ` / ${variant.color}`
+                        : ""}
                     </div>
 
-                    <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "var(--muted)",
+                      }}
+                    >
                       SKU: {variant.sku}
                     </div>
 
-                    <label style={{ fontSize: 12 }}>Stock</label>
+                    <label
+                      style={{
+                        fontSize: 12,
+                      }}
+                    >
+                      Stock
+                    </label>
+
                     <input
                       type="number"
                       min="0"
@@ -326,11 +520,20 @@ export function ProductInventoryManager({ product }: Props) {
                       }
                     />
 
-                    <label style={{ fontSize: 12 }}>Low Stock At</label>
+                    <label
+                      style={{
+                        fontSize: 12,
+                      }}
+                    >
+                      Low Stock At
+                    </label>
+
                     <input
                       type="number"
                       min="0"
-                      value={existingLowStock[variant.id] ?? ""}
+                      value={
+                        existingLowStock[variant.id] ?? ""
+                      }
                       onChange={(e) =>
                         setExistingLowStock((prev) => ({
                           ...prev,
@@ -339,11 +542,20 @@ export function ProductInventoryManager({ product }: Props) {
                       }
                     />
 
-                    <label style={{ fontSize: 12 }}>Price Offset</label>
+                    <label
+                      style={{
+                        fontSize: 12,
+                      }}
+                    >
+                      Price Adjustment
+                    </label>
+
                     <input
                       type="number"
                       step="0.01"
-                      value={existingPriceOffset[variant.id] ?? ""}
+                      value={
+                        existingPriceOffset[variant.id] ?? ""
+                      }
                       onChange={(e) =>
                         setExistingPriceOffset((prev) => ({
                           ...prev,
@@ -352,10 +564,18 @@ export function ProductInventoryManager({ product }: Props) {
                       }
                     />
 
-                    <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                      }}
+                    >
                       <input
                         type="checkbox"
-                        checked={Boolean(existingActive[variant.id])}
+                        checked={Boolean(
+                          existingActive[variant.id]
+                        )}
                         onChange={(e) =>
                           setExistingActive((prev) => ({
                             ...prev,
@@ -363,18 +583,31 @@ export function ProductInventoryManager({ product }: Props) {
                           }))
                         }
                       />
+
                       Active
                     </label>
                   </div>
                 ))}
               </div>
 
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <button type="submit" className="btn-primary">
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  type="submit"
+                  className="btn-primary"
+                >
                   Save All Changes
                 </button>
 
-                <a href={`/admin/products/${product.id}`} className="btn-secondary">
+                <a
+                  href={`/admin/products/${product.id}`}
+                  className="btn-secondary"
+                >
                   Edit Product
                 </a>
               </div>

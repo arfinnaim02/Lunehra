@@ -26,8 +26,6 @@ type EditableProduct = {
     sku: string;
     size: string | null;
     color: string | null;
-    sleeveType: string | null;
-    edition: string | null;
     stockQty: number;
     priceOffset: number;
   }[];
@@ -122,14 +120,14 @@ export function OrderItemsManager({ orderId, items, products }: Props) {
                   }}
                 >
                   <option value="">No variant</option>
-                  {selectedProduct?.variants.map((variant) => (
-                    <option key={variant.id} value={variant.id}>
-                      {[variant.size, variant.color, variant.sleeveType, variant.edition]
-                        .filter(Boolean)
-                        .join(" / ") || variant.sku}{" "}
-                      — Stock: {variant.stockQty}
-                    </option>
-                  ))}
+                    {selectedProduct?.variants.map((variant) => (
+                      <option key={variant.id} value={variant.id}>
+                        {[variant.size, variant.color]
+                          .filter(Boolean)
+                          .join(" / ") || variant.sku}{" "}
+                        — Stock: {variant.stockQty}
+                      </option>
+                    ))}
                 </select>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

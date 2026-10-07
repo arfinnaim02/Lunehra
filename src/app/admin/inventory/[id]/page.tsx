@@ -48,14 +48,14 @@ export default async function InventoryEditPage({ params }: PageProps) {
 
               <div style={{ display: "grid", gap: 8 }}>
                 <label>Variant</label>
-                <input
-                  value={
-                    [row.size, row.color, row.sleeveType, row.edition]
-                      .filter(Boolean)
-                      .join(" / ") || "Default"
-                  }
-                  disabled
-                />
+              <input
+                value={
+                  [row.size, row.color]
+                    .filter(Boolean)
+                    .join(" / ") || "Default"
+                }
+                readOnly
+              />
               </div>
             </div>
 

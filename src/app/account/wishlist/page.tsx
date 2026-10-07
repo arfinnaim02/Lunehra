@@ -17,7 +17,7 @@ function mapProduct(item: {
     collection: string | null;
     isNewArrival: boolean;
     isHotDeal: boolean;
-    isWorldCup: boolean;
+    isBestSeller: boolean;
     category: { name: string };
     images: { url: string; altText: string | null }[];
     variants: { stockQty: number }[];
@@ -40,7 +40,7 @@ function mapProduct(item: {
     totalStock,
     isNewArrival: product.isNewArrival,
     isHotDeal: product.isHotDeal,
-    isWorldCup: product.isWorldCup,
+    isBestSeller: product.isBestSeller,
     isWishlisted: true,
   };
 }
@@ -71,7 +71,7 @@ export default async function WishlistPage() {
           collection: true,
           isNewArrival: true,
           isHotDeal: true,
-          isWorldCup: true,
+          isBestSeller: true,
           category: {
             select: {
               name: true,
@@ -119,8 +119,8 @@ export default async function WishlistPage() {
             className="text-muted"
             style={{ marginTop: 14, maxWidth: 720, lineHeight: 1.8 }}
           >
-            Products you saved for later. Open any product to choose edition,
-            size, and add it to cart.
+          Products you saved for later. Open any product to choose color,
+          size, and add it to cart.
           </p>
         </div>
 

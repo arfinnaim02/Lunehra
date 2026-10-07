@@ -46,8 +46,6 @@ export async function getAdminOrderDetail(orderId: string) {
               id: true,
               size: true,
               color: true,
-              sleeveType: true,
-              edition: true,
               sku: true,
               stockQty: true,
               isActive: true,
@@ -154,12 +152,7 @@ export async function getAdminOrderDetail(orderId: string) {
 
       variantInfo:
         item.variantInfo ||
-        [
-          item.variant?.size,
-          item.variant?.color,
-          item.variant?.sleeveType,
-          item.variant?.edition,
-        ]
+        [item.variant?.size, item.variant?.color]
           .filter(Boolean)
           .join(" / ") ||
         null,
@@ -169,8 +162,6 @@ export async function getAdminOrderDetail(orderId: string) {
             id: item.variant.id,
             size: item.variant.size,
             color: item.variant.color,
-            sleeveType: item.variant.sleeveType,
-            edition: item.variant.edition,
             sku: item.variant.sku,
             stockQty: item.variant.stockQty,
             isActive: item.variant.isActive,
@@ -226,8 +217,6 @@ export async function getOrderEditableProducts() {
           sku: true,
           size: true,
           color: true,
-          sleeveType: true,
-          edition: true,
           stockQty: true,
           priceOffset: true,
         },
@@ -242,15 +231,13 @@ export async function getOrderEditableProducts() {
     image: product.images[0]?.url ?? null,
     basePrice: Number(product.basePrice),
     salePrice: product.salePrice ? Number(product.salePrice) : null,
-    variants: product.variants.map((variant) => ({
-      id: variant.id,
-      sku: variant.sku,
-      size: variant.size,
-      color: variant.color,
-      sleeveType: variant.sleeveType,
-      edition: variant.edition,
-      stockQty: variant.stockQty,
-      priceOffset: Number(variant.priceOffset),
-    })),
+variants: product.variants.map((variant) => ({
+  id: variant.id,
+  sku: variant.sku,
+  size: variant.size,
+  color: variant.color,
+  stockQty: variant.stockQty,
+  priceOffset: Number(variant.priceOffset),
+})),
   }));
 }

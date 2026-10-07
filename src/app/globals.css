@@ -11,6 +11,9 @@
   --background: #0b0b0f;
   --foreground: #ffffff;
 
+  --font-heading: Georgia, "Times New Roman", serif;
+--font-body: Arial, Helvetica, sans-serif;
+
   --card: #14141b;
   --card-2: #1b1b24;
 
@@ -48,6 +51,7 @@ html {
 }
 
 body {
+  font-family: var(--font-body);
   margin: 0;
   background:
     radial-gradient(circle at top center, rgba(216, 255, 47, 0.04), transparent 28%),
