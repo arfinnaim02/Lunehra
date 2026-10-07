@@ -76,7 +76,7 @@ export function CartDrawer() {
                         </Link>
 
                         <div className="cart-drawer-meta">
-                          {[item.edition, item.size, item.color, item.sleeveType]
+                          {[item.size, item.color]
                             .filter(Boolean)
                             .join(" / ") || "Standard"}
                         </div>

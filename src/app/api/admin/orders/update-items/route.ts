@@ -14,10 +14,8 @@ type IncomingItem = {
 function variantLabel(variant: {
   size: string | null;
   color: string | null;
-  sleeveType: string | null;
-  edition: string | null;
 }) {
-  return [variant.size, variant.color, variant.sleeveType, variant.edition]
+  return [variant.size, variant.color]
     .filter(Boolean)
     .join(" / ");
 }

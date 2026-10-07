@@ -10,8 +10,6 @@ export async function POST(request: Request) {
     const sku = String(formData.get("sku") || "").trim();
     const size = String(formData.get("size") || "").trim();
     const color = String(formData.get("color") || "").trim();
-    const sleeveType = String(formData.get("sleeveType") || "").trim();
-    const edition = String(formData.get("edition") || "").trim();
     const priceOffsetRaw = String(formData.get("priceOffset") || "0").trim();
     const stockQtyRaw = String(formData.get("stockQty") || "0").trim();
     const lowStockAtRaw = String(formData.get("lowStockAt") || "5").trim();
@@ -35,8 +33,6 @@ export async function POST(request: Request) {
         sku,
         size: size || null,
         color: color || null,
-        sleeveType: sleeveType || null,
-        edition: edition || null,
         priceOffset: priceOffset.toString(),
         stockQty,
         lowStockAt,

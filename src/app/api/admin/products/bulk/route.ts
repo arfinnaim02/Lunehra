@@ -109,10 +109,10 @@ function getBulkUpdateData(action: string) {
       return { isNewArrival: true };
     case "NEW_ARRIVAL_OFF":
       return { isNewArrival: false };
-    case "WORLD_CUP_ON":
-      return { isWorldCup: true };
-    case "WORLD_CUP_OFF":
-      return { isWorldCup: false };
+    case "BEST_SELLER_ON":
+      return { isBestSeller: true };
+    case "BEST_SELLER_OFF":
+      return { isBestSeller: false };
     default:
       return null;
   }

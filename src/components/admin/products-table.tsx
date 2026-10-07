@@ -15,7 +15,7 @@ type AdminProduct = {
   isFeatured: boolean;
   isHotDeal: boolean;
   isNewArrival: boolean;
-  isWorldCup: boolean;
+  isBestSeller: boolean;
   totalSold: number;
   totalStock: number;
   createdAt: string;
@@ -232,8 +232,8 @@ export function ProductsTable({ products, pagination, search, status }: Props) {
             <option value="HOT_DEAL_OFF">Hot Deal OFF</option>
             <option value="NEW_ARRIVAL_ON">New Arrival ON</option>
             <option value="NEW_ARRIVAL_OFF">New Arrival OFF</option>
-            <option value="WORLD_CUP_ON">World Cup ON</option>
-            <option value="WORLD_CUP_OFF">World Cup OFF</option>
+            <option value="BEST_SELLER_ON">Best Seller ON</option>
+            <option value="BEST_SELLER_OFF">Best Seller OFF</option>
             <option value="DELETE">Delete</option>
           </select>
 
@@ -399,9 +399,9 @@ export function ProductsTable({ products, pagination, search, status }: Props) {
                         <span className="status-pill status-shipped">New</span>
                       ) : null}
 
-                      {product.isWorldCup ? (
+                      {product.isBestSeller ? (
                         <span className="status-pill status-confirmed">
-                          World Cup
+                          Best Seller
                         </span>
                       ) : null}
                     </div>
