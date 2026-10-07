@@ -4,6 +4,7 @@ type ProductFormValues = {
   description: string;
   categoryId: string;
   collection: string;
+  sizeChartId: string;
   basePrice: string;
   salePrice: string;
   status: "DRAFT" | "ACTIVE" | "ARCHIVED";
@@ -16,6 +17,14 @@ type ProductFormValues = {
 type ProductFormProps = {
   action: string;
   categories: { id: string; name: string }[];
+
+  sizeCharts: {
+    id: string;
+    name: string;
+    unit: string;
+    isActive: boolean;
+  }[];
+
   initialValues: ProductFormValues;
   submitLabel: string;
 };
@@ -23,6 +32,7 @@ type ProductFormProps = {
 export function ProductForm({
   action,
   categories,
+  sizeCharts,
   initialValues,
   submitLabel,
 }: ProductFormProps) {
@@ -143,6 +153,55 @@ export function ProductForm({
           <option value="ACTIVE">Active</option>
           <option value="ARCHIVED">Archived</option>
         </select>
+      </div>
+
+            <div
+        style={{
+          display: "grid",
+          gap: 8,
+        }}
+      >
+        <label>
+          Size Chart
+        </label>
+
+        <select
+          name="sizeChartId"
+          defaultValue={
+            initialValues.sizeChartId
+          }
+        >
+          <option value="">
+            No Size Chart
+          </option>
+
+          {sizeCharts.map(
+            (chart) => (
+              <option
+                key={chart.id}
+                value={chart.id}
+              >
+                {chart.name}
+                {chart.unit === "CM"
+                  ? " (CM)"
+                  : " (Inches)"}
+                {!chart.isActive
+                  ? " — Inactive"
+                  : ""}
+              </option>
+            )
+          )}
+        </select>
+
+        <div
+          className="text-muted"
+          style={{
+            fontSize: 12,
+          }}
+        >
+          The selected chart will appear
+          on the storefront product page.
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>

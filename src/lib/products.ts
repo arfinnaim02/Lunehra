@@ -171,6 +171,7 @@ export async function getAdminProductById(id: string) {
       description: true,
       categoryId: true,
       collection: true,
+      sizeChartId: true,
       basePrice: true,
       salePrice: true,
       status: true,
@@ -208,6 +209,7 @@ export async function getAdminProductById(id: string) {
     description: product.description,
     categoryId: product.categoryId,
     collection: product.collection ?? "",
+    sizeChartId: product.sizeChartId ?? "",
     basePrice: product.basePrice.toString(),
     salePrice: product.salePrice
       ? product.salePrice.toString()

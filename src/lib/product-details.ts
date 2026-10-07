@@ -78,6 +78,18 @@ export async function getProductDetailBySlug(
           slug: true,
         },
       },
+            sizeChart: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          unit: true,
+          columns: true,
+          rows: true,
+          note: true,
+          isActive: true,
+        },
+      },
 
       images: {
         orderBy: [

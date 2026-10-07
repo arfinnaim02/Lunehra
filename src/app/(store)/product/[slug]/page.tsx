@@ -203,7 +203,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
               alignItems: "center",
             }}
           >
-            <SizeChartModal productName={product.name} />
+            <SizeChartModal
+              productName={product.name}
+              sizeChart={
+                product.sizeChart?.isActive
+                  ? {
+                      id: product.sizeChart.id,
+                      name: product.sizeChart.name,
+                      description:
+                        product.sizeChart.description,
+                      unit: product.sizeChart.unit,
+                      columns:
+                        product.sizeChart.columns,
+                      rows:
+                        product.sizeChart.rows,
+                      note:
+                        product.sizeChart.note,
+                    }
+                  : null
+              }
+              variants={product.variants.map(
+                (variant) => ({
+                  size: variant.size,
+                  color: variant.color,
+                  stockQty:
+                    variant.stockQty,
+                })
+              )}
+            />
 
             <span
               className={

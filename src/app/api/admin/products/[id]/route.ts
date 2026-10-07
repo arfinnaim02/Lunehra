@@ -16,6 +16,7 @@ export async function POST(request: Request, context: RouteContext) {
     const description = String(formData.get("description") || "").trim();
     const categoryId = String(formData.get("categoryId") || "").trim();
     const collection = String(formData.get("collection") || "").trim();
+    const sizeChartId = String(formData.get("sizeChartId") || "").trim();
     const basePriceRaw = String(formData.get("basePrice") || "").trim();
     const salePriceRaw = String(formData.get("salePrice") || "").trim();
     const status = String(formData.get("status") || "DRAFT").trim();
@@ -82,6 +83,7 @@ export async function POST(request: Request, context: RouteContext) {
         description,
         categoryId,
         collection: collection || null,
+        sizeChartId: sizeChartId || null,
         basePrice: basePrice.toString(),
         salePrice: salePrice !== null ? salePrice.toString() : null,
         status: status as "DRAFT" | "ACTIVE" | "ARCHIVED",

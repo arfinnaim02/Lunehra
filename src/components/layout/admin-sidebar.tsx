@@ -70,6 +70,11 @@ export function AdminSidebar({ counts }: AdminSidebarProps) {
           icon: "🗂️",
         },
         {
+          label: "Size Charts",
+          href: "/admin/size-charts",
+          icon: "📏",
+        },
+        {
           label: "Inventory",
           href: "/admin/inventory",
           icon: "📦",

@@ -185,6 +185,7 @@ model Product {
   status           ProductStatus @default(DRAFT)
   categoryId       String
   brandId          String?
+  sizeChartId      String?
 
   // Pricing
   basePrice Decimal  @db.Decimal(10, 2)
@@ -220,6 +221,7 @@ model Product {
 
   category      Category           @relation(fields: [categoryId], references: [id])
   brand         Brand?             @relation(fields: [brandId], references: [id])
+  sizeChart     SizeChart?         @relation(fields: [sizeChartId], references: [id], onDelete: SetNull)
   images        ProductImage[]
   variants      ProductVariant[]
   reviews       Review[]
@@ -229,11 +231,30 @@ model Product {
 
   @@index([slug])
   @@index([categoryId])
+  @@index([sizeChartId])
   @@index([status])
   @@index([isFeatured])
   @@index([isHotDeal])
   @@index([createdAt])
   @@map("products")
+}
+
+model SizeChart {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  unit        String   @default("INCH")
+  columns     Json
+  rows        Json
+  note        String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+
+  @@index([isActive])
+  @@map("size_charts")
 }
 
 model ProductImage {

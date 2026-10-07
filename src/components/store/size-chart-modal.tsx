@@ -2,239 +2,468 @@
 
 import { useMemo, useState } from "react";
 
-type SizeChartModalProps = {
-  productName: string;
+type ChartColumn = {
+  key: string;
+  label: string;
 };
 
-type EditionType = "FAN" | "PLAYER";
+type ChartRow =
+  Record<string, string>;
 
-const fanEditionRows = [
-  { size: "M", width: '40"', length: '28"' },
-  { size: "L", width: '42"', length: '29"' },
-  { size: "XL", width: '44"', length: '30"' },
-  { size: "XXL", width: '46"', length: '31"' },
-  { size: "3XL", width: '48"', length: '32"' },
-  { size: "4XL", width: '50"', length: '33"' },
-];
+type ProductVariant = {
+  size: string | null;
+  color: string | null;
+  stockQty: number;
+};
 
-const playerEditionRows = [
-  { size: "M", width: '38"', length: '28"' },
-  { size: "L", width: '40"', length: '29"' },
-  { size: "XL", width: '42"', length: '30"' },
-  { size: "XXL", width: '44"', length: '31"' },
-];
+type SizeChart = {
+  id: string;
+  name: string;
+  description: string | null;
+  unit: string;
+  columns: unknown;
+  rows: unknown;
+  note: string | null;
+};
 
-export function SizeChartModal({ productName }: SizeChartModalProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedEdition, setSelectedEdition] = useState<EditionType>("FAN");
+type SizeChartModalProps = {
+  productName: string;
+  sizeChart: SizeChart | null;
+  variants: ProductVariant[];
+};
 
-  const rows = useMemo(() => {
-    return selectedEdition === "FAN" ? fanEditionRows : playerEditionRows;
-  }, [selectedEdition]);
+function normalizeColumns(
+  value: unknown
+): ChartColumn[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (
+      item
+    ): item is ChartColumn => {
+      if (
+        !item ||
+        typeof item !== "object"
+      ) {
+        return false;
+      }
+
+      const record =
+        item as Record<
+          string,
+          unknown
+        >;
+
+      return (
+        typeof record.key ===
+          "string" &&
+        typeof record.label ===
+          "string"
+      );
+    }
+  );
+}
+
+function normalizeRows(
+  value: unknown
+): ChartRow[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (
+      item
+    ): item is ChartRow =>
+      Boolean(
+        item &&
+          typeof item ===
+            "object" &&
+          !Array.isArray(item)
+      )
+  );
+}
+
+export function SizeChartModal({
+  productName,
+  sizeChart,
+  variants,
+}: SizeChartModalProps) {
+  const [open, setOpen] =
+    useState(false);
+
+  const columns =
+    useMemo(
+      () =>
+        normalizeColumns(
+          sizeChart?.columns
+        ),
+      [sizeChart]
+    );
+
+  const rows =
+    useMemo(
+      () =>
+        normalizeRows(
+          sizeChart?.rows
+        ),
+      [sizeChart]
+    );
+
+  const sizeStock =
+    useMemo(() => {
+      const map =
+        new Map<
+          string,
+          number
+        >();
+
+      variants.forEach(
+        (variant) => {
+          const size =
+            variant.size?.trim();
+
+          if (!size) return;
+
+          map.set(
+            size.toLowerCase(),
+            (map.get(
+              size.toLowerCase()
+            ) ?? 0) +
+              variant.stockQty
+          );
+        }
+      );
+
+      return map;
+    }, [variants]);
+
+  if (
+    !sizeChart ||
+    columns.length === 0 ||
+    rows.length === 0
+  ) {
+    return null;
+  }
+
+  const unitLabel =
+    sizeChart.unit === "CM"
+      ? "cm"
+      : "inches";
 
   return (
     <>
       <button
         type="button"
         className="btn-secondary"
-        onClick={() => setOpen(true)}
+        onClick={() =>
+          setOpen(true)
+        }
         style={{
           minWidth: 170,
         }}
       >
-        View Size Chart
+        View Size Guide
       </button>
 
       {open ? (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={`${productName} size chart`}
-          onClick={() => setOpen(false)}
+          aria-label={`${productName} size guide`}
+          onClick={() =>
+            setOpen(false)
+          }
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 1000,
-            background: "rgba(0,0,0,0.72)",
+            background:
+              "rgba(0,0,0,0.72)",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems:
+              "center",
+            justifyContent:
+              "center",
             padding: 20,
           }}
         >
           <div
-            onClick={(e) => e.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
             style={{
               width: "100%",
-              maxWidth: 820,
+              maxWidth: 920,
+              maxHeight:
+                "90vh",
+              overflowY:
+                "auto",
               borderRadius: 24,
-              border: "1px solid rgba(255,255,255,0.08)",
+              border:
+                "1px solid rgba(255,255,255,0.08)",
               background:
-                "linear-gradient(180deg, rgba(18,20,30,0.98), rgba(11,12,18,0.98))",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.45)",
-              overflow: "hidden",
+                "linear-gradient(180deg, rgba(18,20,30,0.99), rgba(11,12,18,0.99))",
+              boxShadow:
+                "0 30px 80px rgba(0,0,0,0.45)",
             }}
           >
             <div
               style={{
-                padding: "20px 22px",
-                borderBottom: "1px solid rgba(255,255,255,0.08)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                padding:
+                  "20px 22px",
+                borderBottom:
+                  "1px solid rgba(255,255,255,0.08)",
+                display:
+                  "flex",
+                justifyContent:
+                  "space-between",
+                alignItems:
+                  "center",
                 gap: 12,
-                flexWrap: "wrap",
               }}
             >
               <div>
                 <div
                   style={{
-                    fontSize: 22,
-                    fontWeight: 800,
-                    fontFamily: "var(--font-heading)",
+                    fontSize: 24,
+                    fontWeight: 900,
+                    fontFamily:
+                      "var(--font-heading)",
                   }}
                 >
-                  Size Chart
+                  {sizeChart.name}
                 </div>
+
                 <div
                   style={{
-                    color: "var(--muted)",
-                    marginTop: 4,
+                    color:
+                      "var(--muted)",
+                    marginTop: 5,
                     fontSize: 14,
                   }}
                 >
-                  Choose the edition type for {productName}
+                  {sizeChart.description ||
+                    `Size guide for ${productName}`}
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() =>
+                  setOpen(false)
+                }
+                aria-label="Close size guide"
                 style={{
                   width: 40,
                   height: 40,
-                  borderRadius: 999,
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(255,255,255,0.04)",
+                  borderRadius:
+                    999,
+                  border:
+                    "1px solid rgba(255,255,255,0.12)",
+                  background:
+                    "rgba(255,255,255,0.04)",
                   color: "#fff",
                   fontSize: 20,
-                  cursor: "pointer",
+                  cursor:
+                    "pointer",
                 }}
               >
                 ×
               </button>
             </div>
 
-            <div style={{ padding: 22, display: "grid", gap: 18 }}>
+            <div
+              style={{
+                padding: 22,
+                display:
+                  "grid",
+                gap: 18,
+              }}
+            >
               <div
                 style={{
-                  display: "flex",
-                  gap: 10,
-                  flexWrap: "wrap",
+                  display:
+                    "flex",
+                  gap: 8,
+                  flexWrap:
+                    "wrap",
+                  alignItems:
+                    "center",
                 }}
               >
-                <button
-                  type="button"
-                  onClick={() => setSelectedEdition("FAN")}
-                  className={selectedEdition === "FAN" ? "btn-primary" : "btn-secondary"}
-                >
-                  Fan Edition
-                </button>
+                <span className="status-pill status-confirmed">
+                  Measurements in{" "}
+                  {unitLabel}
+                </span>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedEdition("PLAYER")}
-                  className={selectedEdition === "PLAYER" ? "btn-primary" : "btn-secondary"}
+                <a
+                  href="/help/size-guide"
+                  target="_blank"
+                  className="btn-secondary"
+                  style={{
+                    fontSize: 12,
+                  }}
                 >
-                  Player Edition
-                </button>
+                  How to Measure
+                </a>
               </div>
 
               <div
                 style={{
-                  borderRadius: 18,
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
-                  padding: 18,
+                  overflowX:
+                    "auto",
+                  borderRadius:
+                    16,
+                  border:
+                    "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                <div
+                <table
                   style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    borderRadius: 999,
-                    padding: "8px 14px",
-                    marginBottom: 16,
-                    background:
-                      selectedEdition === "FAN"
-                        ? "rgba(225,255,59,0.12)"
-                        : "rgba(59,130,246,0.12)",
-                    border:
-                      selectedEdition === "FAN"
-                        ? "1px solid rgba(225,255,59,0.2)"
-                        : "1px solid rgba(59,130,246,0.2)",
-                    fontWeight: 700,
+                    width: "100%",
+                    borderCollapse:
+                      "collapse",
+                    minWidth: 600,
                   }}
                 >
-                  {selectedEdition === "FAN" ? "Fan Edition" : "Player Edition"}
-                </div>
+                  <thead>
+                    <tr
+                      style={{
+                        background:
+                          "rgba(255,255,255,0.04)",
+                        textAlign:
+                          "left",
+                      }}
+                    >
+                      {columns.map(
+                        (
+                          column
+                        ) => (
+                          <th
+                            key={
+                              column.key
+                            }
+                            style={{
+                              padding:
+                                14,
+                            }}
+                          >
+                            {
+                              column.label
+                            }
+                          </th>
+                        )
+                      )}
 
-                <div
-                  style={{
-                    overflowX: "auto",
-                    borderRadius: 16,
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <table
-                    style={{
-                      width: "100%",
-                      borderCollapse: "collapse",
-                      minWidth: 520,
-                    }}
-                  >
-                    <thead>
-                      <tr
+                      <th
                         style={{
-                          background: "rgba(255,255,255,0.04)",
-                          textAlign: "left",
+                          padding: 14,
                         }}
                       >
-                        <th style={{ padding: 14 }}>Size</th>
-                        <th style={{ padding: 14 }}>Width</th>
-                        <th style={{ padding: 14 }}>Length</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((row) => (
-                        <tr
-                          key={row.size}
-                          style={{
-                            borderTop: "1px solid rgba(255,255,255,0.06)",
-                          }}
-                        >
-                          <td style={{ padding: 14, fontWeight: 700 }}>{row.size}</td>
-                          <td style={{ padding: 14 }}>{row.width}</td>
-                          <td style={{ padding: 14 }}>{row.length}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                        Availability
+                      </th>
+                    </tr>
+                  </thead>
 
-                <div
-                  style={{
-                    marginTop: 14,
-                    color: "var(--muted)",
-                    fontSize: 13,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Measurements may vary slightly by 0.5–1 inch due to manual
-                  measurement.
-                </div>
+                  <tbody>
+                    {rows.map(
+                      (
+                        row,
+                        index
+                      ) => {
+                        const size =
+                          String(
+                            row.size ??
+                              ""
+                          ).trim();
+
+                        const stock =
+                          size
+                            ? sizeStock.get(
+                                size.toLowerCase()
+                              ) ??
+                              0
+                            : 0;
+
+                        return (
+                          <tr
+                            key={`${size}-${index}`}
+                            style={{
+                              borderTop:
+                                "1px solid rgba(255,255,255,0.06)",
+                            }}
+                          >
+                            {columns.map(
+                              (
+                                column
+                              ) => (
+                                <td
+                                  key={
+                                    column.key
+                                  }
+                                  style={{
+                                    padding:
+                                      14,
+                                    fontWeight:
+                                      column.key ===
+                                      "size"
+                                        ? 800
+                                        : 400,
+                                  }}
+                                >
+                                  {String(
+                                    row[
+                                      column
+                                        .key
+                                    ] ??
+                                      "-"
+                                  )}
+                                </td>
+                              )
+                            )}
+
+                            <td
+                              style={{
+                                padding:
+                                  14,
+                              }}
+                            >
+                              <span
+                                className={
+                                  stock >
+                                  0
+                                    ? "status-pill status-delivered"
+                                    : "status-pill status-cancelled"
+                                }
+                              >
+                                {stock >
+                                0
+                                  ? "Available"
+                                  : "Not available"}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div
+                style={{
+                  color:
+                    "var(--muted)",
+                  fontSize: 13,
+                  lineHeight:
+                    1.7,
+                }}
+              >
+                {sizeChart.note ||
+                  "Measurements may vary slightly due to manual measurement. Compare the measurements with a similar garment that fits you well."}
               </div>
             </div>
           </div>

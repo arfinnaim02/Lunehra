@@ -3,6 +3,7 @@ import * as CategoryLib from "../../../../lib/categories";
 import { getAdminProductById } from "../../../../lib/products";
 import { ProductForm } from "../../../../components/admin/product-form";
 import { ProductImageManager } from "../../../../components/admin/product-image-manager";
+import { getSizeChartOptions } from "../../../../lib/size-charts";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -13,11 +14,15 @@ export default async function EditProductPage({
 }: PageProps) {
   const { id } = await params;
 
-  const [categories, product] = await Promise.all([
+  const [
+    categories,
+    product,
+    sizeCharts,
+  ] = await Promise.all([
     CategoryLib.getCategories(),
     getAdminProductById(id),
+    getSizeChartOptions(),
   ]);
-
   if (!product) {
     notFound();
   }
@@ -81,6 +86,7 @@ export default async function EditProductPage({
           <ProductForm
             action={`/api/admin/products/${product.id}`}
             categories={categories}
+            sizeCharts={sizeCharts}
             submitLabel="Update Product"
             initialValues={{
               name: product.name,
@@ -88,6 +94,7 @@ export default async function EditProductPage({
               description: product.description,
               categoryId: product.categoryId,
               collection: product.collection,
+              sizeChartId: product.sizeChartId,
               basePrice: product.basePrice,
               salePrice: product.salePrice,
               status: product.status,
